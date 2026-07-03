@@ -2,17 +2,40 @@ pipeline {
 
     agent any
 
+    tools {
+        jdk 'JDK21'          // Configure this in Jenkins
+        maven 'Maven3'       // Configure this in Jenkins
+    }
+
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
+                checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Clean') {
             steps {
-                echo 'Building Spring Boot Project...'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
             }
         }
 
