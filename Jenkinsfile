@@ -1,10 +1,10 @@
 pipeline {
 
-    agent any
-
-    tools {
-        jdk 'JDK21'          // Configure this in Jenkins
-        maven 'Maven3'       // Configure this in Jenkins
+    agent {
+        docker {
+            image 'maven:3.9.11-eclipse-temurin-21'
+            args '-v $HOME/.m2:/root/.m2'
+        }
     }
 
     stages {
@@ -15,30 +15,17 @@ pipeline {
             }
         }
 
-        stage('Clean') {
+        stage('Build') {
             steps {
-                sh 'mvn clean'
-            }
-        }
-
-        stage('Compile') {
-            steps {
-                sh 'mvn compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package'
+                sh 'mvn clean package'
             }
         }
 
     }
 
+    post {
+        success {
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
+    }
 }
