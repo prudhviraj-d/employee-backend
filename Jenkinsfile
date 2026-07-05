@@ -7,10 +7,6 @@ pipeline {
         }
     }
 
-    tools {
-        sonarQube 'SonarScanner'
-    }
-
     stages {
 
         stage('Checkout') {
@@ -29,14 +25,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                    mvn sonar:sonar \
-                    -Dsonar.projectKey=employee-backend \
-                    -Dsonar.host.url=http://host.docker.internal:9000 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=employee-backend
                     '''
                 }
             }
         }
-
     }
 }
