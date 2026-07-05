@@ -3,8 +3,12 @@ pipeline {
     agent {
         docker {
             image 'maven:3.9.11-eclipse-temurin-21'
-            args '-v $HOME/.m2:/root/.m2'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
+    }
+
+    tools {
+        sonarQube 'SonarScanner'
     }
 
     stages {
@@ -15,30 +19,24 @@ pipeline {
             }
         }
 
-        stage('Compile') {
+        stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean verify'
             }
         }
 
-        stage('Unit Test') {
+        stage('SonarQube Analysis') {
             steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
-            }
-        }
-
-        stage('Archive Artifact') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=employee-backend \
+                    -Dsonar.host.url=http://host.docker.internal:9000 \
+                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
             }
         }
 
     }
-
 }
