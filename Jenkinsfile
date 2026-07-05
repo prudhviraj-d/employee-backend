@@ -15,17 +15,30 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Compile') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
 
     }
 
-    post {
-        success {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-        }
-    }
 }
