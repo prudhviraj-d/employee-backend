@@ -1,39 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
-  name: employee-backend
+  name: employee-app
   namespace: employee-app
-
 spec:
   replicas: 2
-
   selector:
     matchLabels:
-      app: employee-backend
-
+      app: employee-app
   template:
-
     metadata:
       labels:
-        app: employee-backend
-
+        app: employee-app
     spec:
-
       containers:
+        - name: employee-app
+          image: pddocker7033/myapp:v2
+          ports:
+            - containerPort: 8089   # match your Spring Boot port
 
-      - name: employee-backend
+          envFrom:
+            - configMapRef:
+                name: employee-config
 
-        image: employee-backend:1.0
-
-        imagePullPolicy: Never
-
-        ports:
-        - containerPort: 8081
-
-        envFrom:
-        - configMapRef:
-            name: employee-config
-
-        - secretRef:
-            name: employee-secret
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
