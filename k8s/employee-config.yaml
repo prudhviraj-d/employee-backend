@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: employee-config
+  namespace: employee-app
+
+data:
+  SPRING_DATASOURCE_URL: jdbc:sqlserver://sql-service:1433;databaseName=EmployeeDatabase;encrypt=true;trustServerCertificate=true
+
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.SQLServerDialect
+
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  SPRING_JPA_SHOW_SQL: "true"
+
+  SPRING_PROFILES_ACTIVE: prod
