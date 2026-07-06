@@ -1,0 +1,29 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Root@123456"
+
+    ports:
+      - "1433:1433"
+
+  employee-app:
+    build: .
+
+    container_name: employee-backend
+
+    depends_on:
+      - sqlserver
+
+    ports:
+      - "8081:8081"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=EmployeeDatabase;encrypt=true;trustServerCertificate=true
+      DB_USERNAME: sa
+      DB_PASSWORD: Root@123456
