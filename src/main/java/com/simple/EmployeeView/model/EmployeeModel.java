@@ -25,5 +25,7 @@ public class EmployeeModel {
 	    private Double salary;
 
 	    private String department;
+	    
+	    private String phoneNumber;
 
 }
